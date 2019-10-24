@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="card_design_print_duplex_wizard">
+        <field name="name">card.print.wizard</field>
+        <field name="model">card.print.wizard</field>
+        <field name="inherit_id" ref="card_design.card_design_print_wizard"/>
+        <field name="arch" type="xml">
+            <field name="file_config" position="after">
+                <field name="nondulpex_type" widget="radio" attrs="{
+                    'invisible': ['|', ('enable_printer', '=', False), ('type', '=', 'label')],
+                }"/>
+                <field name="duplex_type" invisible="1"/>
+                <field name="type" invisible="1"/>
+            </field>
+            <button name="print_coupons" position="attributes">
+                <attribute name="attrs">{
+                    'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('duplex_type', 'not in', ['normal']),
+                    ('duplex_type', '=', False)],
+                }</attribute>
+            </button>
+            <xpath expr="//footer/button[@name='print_png']" position="after">
+                <button string="Print Duplex Gift Card"  class="oe_highlight"
+                    name="print_douplex" type="object" icon="fa-print"
+                    style="background: teal;border-color: teal;"
+                    attrs="{
+                        'invisible': [
+                            '|', '|', '|',
+                            ('enable_printer', '=', False),
+                            ('type', '=', 'label'),
+                            ('duplex_type', 'in', ['normal','noduplex']),
+                            ('duplex_type', '=', False)
+                        ],
+                    }"
+                />
+                <button string="Print Non-duplex Gift Card"  class="oe_highlight"
+                    name="print_nondouplex" type="object" icon="fa-print"
+                    style="background: teal;border-color: teal;"
+                    attrs="{'invisible': ['|', '|', '|', '|',('enable_printer', '=', False), ('type', '=', 'label'), ('duplex_type', 'in', ['normal','duplex']), ('duplex_type', '=', False), ('nondulpex_type', '=', 'nobulk')]}"
+                />
+                <button string="Print Non-duplex Gift Card"  class="oe_highlight"
+                    name="print_nondouplex_nobulk" type="object" icon="fa-print"
+                    style="background: teal;border-color: teal;"
+                    attrs="{'invisible': ['|', '|', '|', '|', ('enable_printer', '=', False), ('type', '=', 'label'),  ('duplex_type', '=', False), ('duplex_type', 'in', ['normal','duplex']), ('nondulpex_type', '=', 'bulk')]}"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="wizard_wizard_non_duplex_print_view">
+        <field name="name">wizard.non.duplex.print.view</field>
+        <field name="model">wizard.non.duplex.print</field>
+        <field name="arch" type="xml">
+            <form string="Print Card">
+                <field name="template_id" invisible="1"/>
+                <field name="is_front_side" invisible="1"/>
+                <field name="printer_id" invisible="1"/>
+                <field name="coupon_id" readonly="1" nolabel="1" style="float:left;"/>
+                <div attrs="{'invisible': [('is_front_side', '!=', False)]}">
+                    Please flip the card print the back side of the card.
+                </div>
+                <div attrs="{'invisible': [('is_front_side', '=', False)]}">
+                    Print the front side of the card.
+                </div>
+                <footer>
+                    <button name="print_data_back" type="object" string="Print"
+                        class="oe_highlight" icon="fa-print"
+                        attrs="{'invisible': [('is_front_side', '!=', False)]}"
+                    />
+                    <button name="print_data_front" type="object" string="Print"
+                        class="oe_highlight" icon="fa-print"
+                        attrs="{'invisible': [('is_front_side', '=', False)]}"
+                    />
+                    <button string="Cancel" class="btn-default"
+                            special="cancel" style="margin-left:15px;"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

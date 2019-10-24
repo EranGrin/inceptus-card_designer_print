@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <template id="assets_backend" name="double_side_print_assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/card_design_double_side_print/static/src/js/printer_action.js"></script>
+        </xpath>
+    </template>
+
+    <record model="ir.ui.view" id="card_desgin_template_form_view">
+        <field name="name">card.design.template.form.view</field>
+        <field name="model">card.template</field>
+        <field name="inherit_id" ref="card_design.card_desgin_template_form_view"/>
+        <field name="arch" type="xml">
+            <button name="qz_print_front_side" position="attributes">
+                <attribute name="attrs">{
+                    'invisible': ['|', ('enable_printer', '=', False), ('type', '=', 
+                    'card'), ('duplex_type', '!=', 'normal')],
+                }</attribute>
+            </button>
+            <button name="qz_print_back_side" position="attributes">
+                <attribute name="attrs">{
+                    'invisible': ['|', ('enable_printer', '=', False), ('type', '=', 
+                    'card'), ('duplex_type', '!=', 'normal')],
+                }</attribute>
+            </button>
+            <xpath expr="//group[@name='add_size']" position="after">
+                    <group>
+                        <field name="duplex_type"
+                            attrs="{
+                                'required': [('type', '!=', 'label')],
+                                'invisible': ['|', ('type', '=', 'label'), ('back_side', '=', False)],
+                            }"
+                        />
+                    </group>
+            </xpath>
+            <field name="footer_data" position="after">
+                <field name="double_print_back_data"
+                    attrs="{
+                        'required': [('type', '!=', 'label')],
+                        'invisible': ['|', '|', '|', ('duplex_type', '=', False), ('type', '=', 'label'), ('duplex_type', '=', 'normal'), ('back_side', '=', False)],
+                    }" invisible="1"
+                />
+            </field>
+            <button name="print_both_side_png" position="after">
+                <button name="qz_double_nonduplex_front_print" type="object" string="Non-Duplex Print"
+                    class="oe_highlight" icon="fa-print" style="background: teal;border-color: teal;"
+                    attrs="{
+                        'invisible': ['|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'),
+                        ('duplex_type', 'in', ['normal', 'duplex']), ('back_side', '=', False)],
+                    }"/>
+                <button name="qz_double_duplex_print" type="object" string="Duplex Print"
+                    class="oe_highlight" icon="fa-print" style="background: teal;border-color: teal;"
+                    attrs="{
+                        'invisible': ['|', '|', '|', '|', ('duplex_type', '=', False), ('enable_printer', '=', False), ('type', '=', 'label'), ('back_side', '=', False), ('duplex_type', 'in', ['normal', 'noduplex'])],
+                    }"/>
+            </button>
+            <xpath expr="//group[@name='check_manually_data']" position="after">
+                <div attrs="{
+                            'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('back_side', '=', False), ('duplex_type', '!=', 'noduplex'),
+                            ('is_manually', '=', False)],
+                        }">
+                    <button name="check_manually_body_data_duplex" type="object"
+                        string="Check Manually Back Data"/>
+                </div>
+                <group attrs="{
+                    'invisible': ['|', '|', '|', ('enable_printer', '=', False), ('back_side', '=', False), ('duplex_type', '!=', 'noduplex'), ('is_manually', '=', False)],
+                }">
+                    <field nolabel="1" name="check_manually_data_duplex" attrs="{
+                    }"  style="min-height:300px"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
